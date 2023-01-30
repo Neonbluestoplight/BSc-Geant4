@@ -108,9 +108,9 @@
 
  6- DETECTOR RESPONSE
 
-   The energy deposit, track lengths and (X,Y,Z) coordinates of the charged 
-   particles are recorded on an event by event basis in the Absober and Gap 
-   layers.
+   The energy deposit, track lengths of the charged particles 
+   are recorded on an event by event basis in the Absober and 
+   Gap layers, and (X,Y,Z) coordinates of particle in detector. 
 
    The method of data scoring is implemented in 4 ways in B4c. 
    The method relevant to the example B4c is given below:
@@ -143,9 +143,6 @@
    - X position in absorber
    - Y position in absorber
    - Z position in absorber
-   - X position in gap
-   - Y position in gap
-   - Z position in gap
  
    The same values are also saved in an ntuple.
 
