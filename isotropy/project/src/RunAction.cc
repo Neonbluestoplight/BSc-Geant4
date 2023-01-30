@@ -61,9 +61,9 @@ RunAction::RunAction()
   //
 
   // Creating histograms
-  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 800*MeV);
+  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 100*MeV);
 
-  analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
+  analysisManager->CreateH1("Labs","trackL in absorber", 1000, 0., 1*m);
 
   analysisManager->CreateH1("absX","absorber X position", 100, 0., 1*m);
   analysisManager->CreateH1("absY","absorber Y position", 100, 0., 1*m);
