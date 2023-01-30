@@ -53,7 +53,7 @@ RunAction::RunAction()
   // Create directories
   //analysisManager->SetHistoDirectoryName("histograms");
   //analysisManager->SetNtupleDirectoryName("ntuple");
-  analysisManager->SetVerboseLevel(1);
+  analysisManager->SetVerboseLevel(0);
   analysisManager->SetNtupleMerging(true);
     // Note: merging ntuples is available only with Root output
 

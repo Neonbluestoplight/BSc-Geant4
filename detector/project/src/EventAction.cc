@@ -81,6 +81,7 @@ void EventAction::PrintEventStatistics(
                               G4double gapEdep, G4double gapTrackLength, G4ThreeVector gapPos) const
 {
   // print event statistics
+  /*
   G4cout
      << "   Absorber: total energy: "
      << std::setw(7) << G4BestUnit(absoEdep, "Energy")
@@ -96,6 +97,7 @@ void EventAction::PrintEventStatistics(
      << "       event position: "
      << std::setw(7) << gapPos
      << G4endl;
+     */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -123,7 +125,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   // Print per event (modulo n)
   //
-  auto eventID = event->GetEventID();
+  /*auto eventID = event->GetEventID();
   auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
   if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
     G4cout << "---> End of event: " << eventID << G4endl;
@@ -131,7 +133,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     PrintEventStatistics(
       absoHit->GetEdep(), absoHit->GetTrackLength(), absoHit->GetPosition(),
       gapHit->GetEdep(), gapHit->GetTrackLength(), gapHit->GetPosition());
-  }
+  }*/
 
   // Fill histograms, ntuple
   //

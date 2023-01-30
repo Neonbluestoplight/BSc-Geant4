@@ -10,8 +10,10 @@
 #
 # Default kinemtics: 
 # electron 50 MeV in direction (0.,0.,1.)
-# 1000000 events
+
 #
-/run/printProgress 100
-/run/beamOn 1000000
+/control/alias EventNo 1000000
+/control/divide Percent {EventNo} 100
+/run/printProgress {Percent}
+/run/beamOn {EventNo}
 
