@@ -108,20 +108,20 @@
 
  6- DETECTOR RESPONSE
 
-   The energy deposit, track lengths of the charged particles 
-   are recorded on an event by event basis in the Absober and 
-   Gap layers, and (X,Y,Z) coordinates of particle in detector. 
+   The energy deposit, track lengths and (X,Y,Z) coordinates 
+   of the charged particles are recorded on an event by event 
+   basis in the Absober and Gap layers. 
 
    The method of data scoring is implemented in 4 ways in B4c. 
    The method relevant to the example B4c is given below:
 
    Variant c: Hits and Sensitive detectors
 
-     The physics quantities are accounted using the hits
-     and sensitive detectors framework defined in the Geant4 kernel.
-     The physics quantities are stored in B4c::CalorHit via two B4c::CalorimeterSD
-     objects, one associated with the Absorber volume and another one with Gap
-     in B4c::DetectorConstruction::ConstructSDandField().
+     The physics quantities are accounted using the hits and sensitive detectors 
+     framework defined in the Geant4 kernel. The physics quantities are stored 
+     in B4c::CalorHit via two B4c::CalorimeterSD objects, one associated with 
+     the Absorber volume and another one with Gap in 
+       B4c::DetectorConstruction::ConstructSDandField().
 
      Contrary to the B2 example (Tracker) where a new hit is created with each 
      track passing the sensitive volume (in the calorimeter), only one hit is 
@@ -133,9 +133,9 @@
   7- HISTOGRAMS
 
    The analysis tools are used to accumulate statistics and compute the dispersion
-   of the energy deposit and track lengths of the charged particles.
-   H1D histograms are created in B4c::RunAction::RunAction() for the
-   following quantities:
+   of the energy deposit and track lengths of the charged particles. H1D histograms 
+   are created in B4c::RunAction::RunAction() for the following quantities:
+
    - Energy deposit in absorber
    - Energy deposit in gap
    - Track length in absorber
@@ -143,6 +143,9 @@
    - X position in absorber
    - Y position in absorber
    - Z position in absorber
+   - X position in gap
+   - Y position in gap
+   - Z position in gap
  
    The same values are also saved in an ntuple.
 
@@ -154,8 +157,8 @@
    run, in B4::RunAction::EndOfRunAction().
    When running in multi-threading mode, the histograms and the ntuple accumulated
    on threads are merged in a single output file. While merging of histograms is
-   performed by default, merging of ntuples is explicitly activated in the B4::RunAction
-   constructor.
+   performed by default, merging of ntuples is explicitly activated in the 
+   B4::RunAction constructor.
 
    The ROOT histograms and ntuple can be plotted with ROOT using the plotHisto.C
    and plotNtuple.C macros.
@@ -200,20 +203,19 @@
 
  A- VISUALIZATION
 
-   The visualization manager is set via the G4VisExecutive class
-   in the main() function in exampleB4c.cc. The initialisation of 
-   the drawing is done via a set of /vis/ commands in the macro vis.mac. 
-   This macro is automatically read from the main function when the 
-   example is used in interactive running mode.
+   The visualization manager is set via the G4VisExecutive class in the 
+   main() function in exampleB4c.cc. The initialisation of the drawing 
+   is done via a set of /vis/ commands in the macro vis.mac. This macro 
+   is automatically read from the main function when the example is used 
+   in interactive running mode.
 
-   By default, vis.mac opens an OpenGL viewer (/vis/open OGL).
-   The user can change the initial viewer by commenting out this line
-   and instead uncommenting one of the other /vis/open statements, such as
-   HepRepFile or DAWNFILE (which produce files that can be viewed with the
-   HepRApp and DAWN viewers, respectively).  Note that one can always
-   open new viewers at any time from the command line.  For example, if
-   you already have a view in, say, an OpenGL window with a name
-   "viewer-0", then
+   By default, vis.mac opens an OpenGL viewer (/vis/open OGL). The user 
+   can change the initial viewer by commenting out this line and instead 
+   uncommenting one of the other /vis/open statements, such as HepRepFile 
+   or DAWNFILE (which produce files that can be viewed with the HepRApp 
+   and DAWN viewers, respectively). Note that one can always open new 
+   viewers at any time from the command line. For example, if you already 
+   have a view in, say, an OpenGL window with a name "viewer-0", then
       /vis/open DAWNFILE
    then to get the same view
       /vis/viewer/copyView viewer-0
@@ -222,15 +224,15 @@
    then to see the result
       /vis/viewer/flush
 
-   The DAWNFILE, HepRepFile drivers are always available
-   (since they require no external libraries), but the OGL driver requires
-   that the Geant4 libraries have been built with the OpenGL option.
+   The DAWNFILE, HepRepFile drivers are always available (since they require 
+   no external libraries), but the OGL driver requires that the Geant4 libraries 
+   have been built with the OpenGL option.
 
-   For more information on visualization, including information on how to
-   install and run DAWN, OpenGL and HepRApp, see the visualization tutorials,
-   for example,
+   For more information on visualization, including information on how to install 
+   and run DAWN, OpenGL and HepRApp, see the visualization tutorials,for example,
    https://conferences.fnal.gov/g4tutorial/g4cd/Documentation/Visualization/G4[VIS]Tutorial/G4[VIS]Tutorial.html
-   (where [VIS] can be replaced by DAWN, OpenGL. HepRApp not currently available on above site or geant4 SLAC)
+   (where [VIS] can be replaced by DAWN, OpenGL. HepRApp not currently available 
+   on above site or geant4 SLAC)
 
    The tracks are automatically drawn at the end of each event, accumulated
    for all events and erased at the beginning of the next run.
@@ -239,6 +241,7 @@
 
    The user command interface is set via the G4UIExecutive class
    in the main() function in exampleB4c.cc
+
    The selection of the user command interface is then done automatically
    according to the Geant4 configuration or it can be done explicitly via
    the third argument of the G4UIExecutive constructor (see exampleB4c.cc).

@@ -53,7 +53,7 @@ RunAction::RunAction()
   // Create directories
   //analysisManager->SetHistoDirectoryName("histograms");
   //analysisManager->SetNtupleDirectoryName("ntuple");
-  analysisManager->SetVerboseLevel(0);
+  analysisManager->SetVerboseLevel(1);
   analysisManager->SetNtupleMerging(true);
     // Note: merging ntuples is available only with Root output
 
@@ -61,19 +61,19 @@ RunAction::RunAction()
   //
 
   // Creating histograms
-  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 800*MeV);
+  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 100*MeV);
   analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*MeV);
 
-  analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
+  analysisManager->CreateH1("Labs","trackL in absorber", 1000, 0., 1*m);
   analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
 
-  analysisManager->CreateH1("absX","absorber X position", 100, 0., 1*m);
-  analysisManager->CreateH1("absY","absorber Y position", 100, 0., 1*m);
-  analysisManager->CreateH1("absZ","absorber Z position", 100, 0., 1*m);
+  analysisManager->CreateH1("absX","absorber X position", 1000, 0., 1*m);
+  analysisManager->CreateH1("absY","absorber Y position", 1000, 0., 1*m);
+  analysisManager->CreateH1("absZ","absorber Z position", 1000, 0., 1*m);
 
-  analysisManager->CreateH1("gapX","gap X position", 100, 0., 1*m); 
-  analysisManager->CreateH1("gapY","gap Y position", 100, 0., 1*m); 
-  analysisManager->CreateH1("gapZ","gap Z position", 100, 0., 1*m);  
+  analysisManager->CreateH1("gapX","gap X position", 1000, 0., 1*m); 
+  analysisManager->CreateH1("gapY","gap Y position", 1000, 0., 1*m); 
+  analysisManager->CreateH1("gapZ","gap Z position", 1000, 0., 1*m);  
 
   // Creating ntuple
   //
