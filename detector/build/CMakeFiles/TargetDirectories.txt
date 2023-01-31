@@ -1,7 +1,0 @@
-/home/neonbluestop/workspace/detector/build/CMakeFiles/install/strip.dir
-/home/neonbluestop/workspace/detector/build/CMakeFiles/install/local.dir
-/home/neonbluestop/workspace/detector/build/CMakeFiles/install.dir
-/home/neonbluestop/workspace/detector/build/CMakeFiles/list_install_components.dir
-/home/neonbluestop/workspace/detector/build/CMakeFiles/rebuild_cache.dir
-/home/neonbluestop/workspace/detector/build/CMakeFiles/edit_cache.dir
-/home/neonbluestop/workspace/detector/build/CMakeFiles/exampleB4c.dir
