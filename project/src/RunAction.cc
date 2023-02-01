@@ -61,6 +61,7 @@ RunAction::RunAction()
   //
 
   // Creating histograms
+<<<<<<< HEAD:project/src/RunAction.cc
   analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 60*MeV);
   analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 60*MeV);
 
@@ -74,6 +75,21 @@ RunAction::RunAction()
   analysisManager->CreateH1("gapX","gap X position", 1000, -10.*mm, 10*mm);
   analysisManager->CreateH1("gapY","gap Y position", 1000, -10.*mm, 10*mm);
   analysisManager->CreateH1("gapZ","gap Z position", 1000, -10.*mm, 10*mm);
+=======
+  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 100*MeV);
+  analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*MeV);
+
+  analysisManager->CreateH1("Labs","trackL in absorber", 1000, 0., 1*m);
+  analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
+
+  analysisManager->CreateH1("absX","absorber X position", 1000, 0., 1*m);
+  analysisManager->CreateH1("absY","absorber Y position", 1000, 0., 1*m);
+  analysisManager->CreateH1("absZ","absorber Z position", 1000, 0., 1*m);
+
+  analysisManager->CreateH1("gapX","gap X position", 1000, 0., 1*m); 
+  analysisManager->CreateH1("gapY","gap Y position", 1000, 0., 1*m); 
+  analysisManager->CreateH1("gapZ","gap Z position", 1000, 0., 1*m);  
+>>>>>>> 3a86e5516346a47ed3b9c8e37a0527855f5da91d:detector/project/src/RunAction.cc
 
   // Creating ntuple
   //
