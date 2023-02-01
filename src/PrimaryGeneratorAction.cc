@@ -100,7 +100,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   // Set gun position
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -worldZHalfLength/2));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -worldZHalfLength/3));
 
   G4double cosTheta = 2*G4UniformRand() - 1., phi = twopi*G4UniformRand();
   G4double sinTheta = std::sqrt(1. - cosTheta*cosTheta);
