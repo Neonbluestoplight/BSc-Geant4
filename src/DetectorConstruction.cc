@@ -279,10 +279,12 @@ void DetectorConstruction::ConstructSDandField()
   G4SDManager::GetSDMpointer()->AddNewDetector(absoSD);
   SetSensitiveDetector("AbsoLV",absoSD);
 
+/*
   auto gapSD
     = new CalorimeterSD("GapSD", "GapHitsCollection", fNofLayers);
   G4SDManager::GetSDMpointer()->AddNewDetector(gapSD);
   SetSensitiveDetector("GapLV",gapSD);
+*/
 
   //
   // Magnetic field

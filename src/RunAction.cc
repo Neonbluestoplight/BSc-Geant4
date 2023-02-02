@@ -62,35 +62,35 @@ RunAction::RunAction()
 
   // Creating histograms
   analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 60*MeV);
-  analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 60*MeV);
+  //analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 60*MeV);
 
   analysisManager->CreateH1("Labs","trackL in absorber", 1000, 0., 10*mm);
-  analysisManager->CreateH1("Lgap","trackL in gap", 1000, 0., 10*mm);
+  //analysisManager->CreateH1("Lgap","trackL in gap", 1000, 0., 10*mm);
 
   analysisManager->CreateH1("absX","absorber X position", 1000, -10.*mm, 10*mm);
   analysisManager->CreateH1("absY","absorber Y position", 1000, -10.*mm, 10*mm);
   analysisManager->CreateH1("absZ","absorber Z position", 1000, -10.*mm, 10*mm);
 
-  analysisManager->CreateH1("gapX","gap X position", 1000, -10.*mm, 10*mm);
-  analysisManager->CreateH1("gapY","gap Y position", 1000, -10.*mm, 10*mm);
-  analysisManager->CreateH1("gapZ","gap Z position", 1000, -10.*mm, 10*mm);
+  //analysisManager->CreateH1("gapX","gap X position", 1000, -10.*mm, 10*mm);
+  //analysisManager->CreateH1("gapY","gap Y position", 1000, -10.*mm, 10*mm);
+  //analysisManager->CreateH1("gapZ","gap Z position", 1000, -10.*mm, 10*mm);
 
   // Creating ntuple
   //
   analysisManager->CreateNtuple("B4", "Edep and TrackL");
   analysisManager->CreateNtupleDColumn("Eabs");
-  analysisManager->CreateNtupleDColumn("Egap");
+  //analysisManager->CreateNtupleDColumn("Egap");
 
   analysisManager->CreateNtupleDColumn("Labs");
-  analysisManager->CreateNtupleDColumn("Lgap");
+  //analysisManager->CreateNtupleDColumn("Lgap");
 
   analysisManager->CreateNtupleDColumn("absX");
   analysisManager->CreateNtupleDColumn("absY");
   analysisManager->CreateNtupleDColumn("absZ");
 
-  analysisManager->CreateNtupleDColumn("gapX");
-  analysisManager->CreateNtupleDColumn("gapY");
-  analysisManager->CreateNtupleDColumn("gapZ");
+  //analysisManager->CreateNtupleDColumn("gapX");
+  //analysisManager->CreateNtupleDColumn("gapY");
+  //analysisManager->CreateNtupleDColumn("gapZ");
 
   analysisManager->FinishNtuple();
 }
@@ -143,20 +143,20 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
        << " rms = "
        << G4BestUnit(analysisManager->GetH1(0)->rms(),  "Energy") << G4endl;
 
-    G4cout << " EGap : mean = "
-       << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy")
-       << " rms = "
-       << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
+    //G4cout << " EGap : mean = "
+    //   << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy")
+    //   << " rms = "
+    //   << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
 
     G4cout << " LAbs : mean = "
       << G4BestUnit(analysisManager->GetH1(2)->mean(), "Length")
       << " rms = "
       << G4BestUnit(analysisManager->GetH1(2)->rms(),  "Length") << G4endl;
 
-    G4cout << " LGap : mean = "
-      << G4BestUnit(analysisManager->GetH1(3)->mean(), "Length")
-      << " rms = "
-      << G4BestUnit(analysisManager->GetH1(3)->rms(),  "Length") << G4endl;
+    //G4cout << " LGap : mean = "
+    //  << G4BestUnit(analysisManager->GetH1(3)->mean(), "Length")
+    //  << " rms = "
+    //  << G4BestUnit(analysisManager->GetH1(3)->rms(),  "Length") << G4endl;
   }
 
   // save histograms & ntuple

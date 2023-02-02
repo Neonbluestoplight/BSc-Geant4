@@ -55,8 +55,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
   // default particle kinematic
   //
-  auto particleDefinition
-    = G4ParticleTable::GetParticleTable()->FindParticle("alpha");
+  auto particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("alpha");
   fParticleGun->SetParticleDefinition(particleDefinition);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(50.*MeV);

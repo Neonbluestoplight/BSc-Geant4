@@ -58,12 +58,12 @@ private:
   // methods
   CalorHitsCollection* GetHitsCollection(G4int hcID,
                                             const G4Event* event) const;
-  void PrintEventStatistics(G4double absoEdep, G4double absoTrackLength, G4ThreeVector absoPos,
-                            G4double gapEdep, G4double gapTrackLength, G4ThreeVector gapPos) const;
+  void PrintEventStatistics(G4double absoEdep, G4double absoTrackLength, G4ThreeVector absoPos/*,
+                            G4double gapEdep, G4double gapTrackLength, G4ThreeVector gapPos*/) const;
 
   // data members
   G4int fAbsHCID = -1;
-  G4int fGapHCID = -1;
+  //G4int fGapHCID = -1;
 };
 
 }
