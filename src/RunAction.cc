@@ -75,20 +75,6 @@ RunAction::RunAction()
   analysisManager->CreateH1("gapY","gap Y position", 1000, -10.*mm, 10*mm);
   analysisManager->CreateH1("gapZ","gap Z position", 1000, -10.*mm, 10*mm);
 
-  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 100*MeV);
-  analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*MeV);
-
-  analysisManager->CreateH1("Labs","trackL in absorber", 1000, 0., 1*m);
-  analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
-
-  analysisManager->CreateH1("absX","absorber X position", 1000, 0., 1*m);
-  analysisManager->CreateH1("absY","absorber Y position", 1000, 0., 1*m);
-  analysisManager->CreateH1("absZ","absorber Z position", 1000, 0., 1*m);
-
-  analysisManager->CreateH1("gapX","gap X position", 1000, 0., 1*m); 
-  analysisManager->CreateH1("gapY","gap Y position", 1000, 0., 1*m); 
-  analysisManager->CreateH1("gapZ","gap Z position", 1000, 0., 1*m);  
-
   // Creating ntuple
   //
   analysisManager->CreateNtuple("B4", "Edep and TrackL");
