@@ -61,8 +61,6 @@ DetectorConstruction::DetectorConstruction()
 {
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 DetectorConstruction::~DetectorConstruction()
 {
 }
@@ -104,18 +102,51 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
   // Geometry parameters
   fNofLayers = 1;
-  G4double absoThickness = 300.*um;
-  G4double gapThickness =  300.*um;
-  G4double calorSizeXY  = 10.*mm;
 
+  // Size parameters
+  G4double calorSizeX    = 12.7 *mm;
+  G4double calorSizeY    = 14.5 *mm;
+  G4double absoSizeXY    = 10   *mm;
+  
+  // Thickness parameters
+  G4double absoThickness = 0.3  *mm;
+  G4double gapThickness  = 1.41 *mm;
   auto layerThickness = absoThickness + gapThickness;
   auto calorThickness = fNofLayers * layerThickness;
-  auto worldSizeXYZ = 5 * calorSizeXY;
+  auto worldSizeXYZ = 5 * absoSizeXY;
+
+  // Position in world parameters
+  G4double calorXpos     = 0. *mm;
+  G4double calorYpos     = -0.85 *mm;
+
+  // Position in world vectors
+  G4ThreeVector worldPlace = G4ThreeVector();  // Cannot adjust this
+  G4ThreeVector calPlace   = G4ThreeVector(calorXpos, calorYpos, 0.);
+  G4ThreeVector absPlace   = G4ThreeVector(0., -calorYpos/2, -gapThickness/2);
+  G4ThreeVector gapPlace   = G4ThreeVector(0., 0., absoThickness/2);
+
+  // Size vector parameters
+  G4ThreeVector worldSize = G4ThreeVector(worldSizeXYZ/2, worldSizeXYZ/2, worldSizeXYZ/2);
+  G4ThreeVector calorSize = G4ThreeVector(calorSizeX/2, calorSizeY/2, calorThickness/2);
+  G4ThreeVector layerSize = G4ThreeVector(calorSizeX/2, calorSizeY/2, layerThickness/2);
+  G4ThreeVector absSize   = G4ThreeVector(absoSizeXY/2, absoSizeXY/2, absoThickness/2);
+  G4ThreeVector gapSize   = G4ThreeVector(calorSizeX/2, calorSizeY/2, gapThickness/2);
+
+  // Rotation parameters of the calorimeter
+  G4double rotX = 0. *deg;
+  G4double rotY = 0. *deg;
+  G4double rotZ = 0. *deg;
+  G4RotationMatrix* worldRot = new G4RotationMatrix(); //Cannot adjust this
+  G4RotationMatrix* calorRot = new G4RotationMatrix();
+  calorRot->rotateX(rotX);
+  calorRot->rotateY(rotY);
+  calorRot->rotateZ(rotZ);
 
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
   auto absorberMaterial = G4Material::GetMaterial("G4_Si");
   auto gapMaterial = G4Material::GetMaterial("G4_Si");
+
 
   if ( ! defaultMaterial || ! absorberMaterial || ! gapMaterial ) {
     G4ExceptionDescription msg;
@@ -127,116 +158,71 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //
   // World
   //
-  auto worldS
-    = new G4Box("World",           // its name
-                 worldSizeXYZ/2, worldSizeXYZ/2, worldSizeXYZ/2); // its size
+  // G4Box(<name>,<sizeX>,<sizeY>,<sizeZ>); where size is in half lengths
+  // G4LogicalVolume(<solid name>,<material>,<title>)
+  // G4PVPlacement(<rotation matrix>,<position vector>,<logical volume>,
+  //              <title>,<mother volume>,<boolean>,<copy number>,<check overlaps>)
+  auto worldS = new G4Box("World", worldSize[0], worldSize[1], worldSize[2]); 
 
-  auto worldLV
-    = new G4LogicalVolume(
-                 worldS,           // its solid
-                 defaultMaterial,  // its material
-                 "World");         // its name
+  auto worldLV = new G4LogicalVolume(worldS, defaultMaterial, "World");         
 
-  auto worldPV
-    = new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
-                 worldLV,          // its logical volume
-                 "World",          // its name
-                 0,                // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
-                 fCheckOverlaps);  // checking overlaps
+  auto worldPV = new G4PVPlacement(worldRot, worldPlace, worldLV, 
+                                   "World", 0, false, 0, fCheckOverlaps);  
 
   //
   // Calorimeter
   //
-  auto calorimeterS
-    = new G4Box("Calorimeter",     // its name
-                 calorSizeXY/2, calorSizeXY/2, calorThickness/2); // its size
+  // G4Box(<name>,<sizeX>,<sizeY>,<sizeZ>); where size is in half lengths
+  // G4LogicalVolume(<solid name>,<material>,<title>)
+  // G4PVPlacement(<rotation matrix>,<position vector>,<logical volume>,
+  //              <title>,<mother volume>,<boolean>,<copy number>,<check overlaps>)
+  auto calorimeterS = new G4Box("Calorimeter", calorSize[0], calorSize[1], calorSize[2]);
 
-  auto calorLV
-    = new G4LogicalVolume(
-                 calorimeterS,     // its solid
-                 defaultMaterial,  // its material
-                 "Calorimeter");   // its name
+  auto calorLV = new G4LogicalVolume(calorimeterS, defaultMaterial, "Calorimeter");
 
-  new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
-                 calorLV,          // its logical volume
-                 "Calorimeter",    // its name
-                 worldLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
-                 fCheckOverlaps);  // checking overlaps
+  new G4PVPlacement(calorRot, calPlace, calorLV, 
+                   "Calorimeter", worldLV, false, 0, fCheckOverlaps);  
 
   //
   // Layer
   //
-  auto layerS
-    = new G4Box("Layer",           // its name
-                 calorSizeXY/2, calorSizeXY/2, layerThickness/2); //its size
+  // G4Box(<name>,<sizeX>,<sizeY>,<sizeZ>); where size is in half lengths 
+  // G4LogicalVolume(<solid name>,<material>,<title>)
+  // G4VReplica(<title>,<logical volume>,<mother volume>,<axis of replication>,<number of replicas>,<replica width>)
+  auto layerS = new G4Box("Layer", layerSize[0], layerSize[1], layerSize[2]);
 
-  auto layerLV
-    = new G4LogicalVolume(
-                 layerS,           // its solid
-                 defaultMaterial,  // its material
-                 "Layer");         // its name
+  auto layerLV = new G4LogicalVolume(layerS, defaultMaterial, "Layer");    
 
-  new G4PVReplica(
-                 "Layer",          // its name
-                 layerLV,          // its logical volume
-                 calorLV,          // its mother
-                 kZAxis,           // axis of replication
-                 fNofLayers,        // number of replica
-                 layerThickness);  // witdth of replica
+  new G4PVReplica("Layer", layerLV, calorLV, 
+                  kZAxis, fNofLayers, layerThickness);
 
   //
   // Absorber
-  //
-  auto absorberS
-    = new G4Box("Abso",            // its name
-                 calorSizeXY/2, calorSizeXY/2, absoThickness/2); // its size
+  // 
+  // G4Box(<name>,<sizeX>,<sizeY>,<sizeZ>); where size is in half lengths
+  // G4LogicalVolume(<solid name>,<material>,<title>)
+  // G4PVPlacement(<rotation matrix>,<position vector>,<logical volume>,
+  //              <title>,<mother volume>,<boolean>,<copy number>,<check overlaps>)
+  auto absorberS = new G4Box("Abso", absSize[0], absSize[1], absSize[2]);
 
-  auto absorberLV
-    = new G4LogicalVolume(
-                 absorberS,        // its solid
-                 absorberMaterial, // its material
-                 "AbsoLV");        // its name
+  auto absorberLV = new G4LogicalVolume(absorberS, absorberMaterial, "AbsoLV");        
 
-   new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(0., 0., -gapThickness/2), // its position
-                 absorberLV,       // its logical volume
-                 "Abso",           // its name
-                 layerLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
-                 fCheckOverlaps);  // checking overlaps
+   new G4PVPlacement(0, absPlace, absorberLV, 
+                     "Abso", layerLV, false, 0, fCheckOverlaps); 
 
   //
   // Gap
   //
-  auto gapS
-    = new G4Box("Gap",             // its name
-                 calorSizeXY/2, calorSizeXY/2, gapThickness/2); // its size
+  // G4Box(<name>,<sizeX>,<sizeY>,<sizeZ>); where size is in half lengths
+  // G4LogicalVolume(<solid name>,<material>,<title>)
+  // G4PVPlacement(<rotation matrix>,<position vector>,<logical volume>,
+  //              <title>,<mother volume>,<boolean>,<copy number>,<check overlaps>)
+  auto gapS = new G4Box("Gap", gapSize[0], gapSize[1], gapSize[2]); 
 
-  auto gapLV
-    = new G4LogicalVolume(
-                 gapS,             // its solid
-                 gapMaterial,      // its material
-                 "GapLV");         // its name
+  auto gapLV = new G4LogicalVolume(gapS, gapMaterial, "GapLV");         
 
-  new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(0., 0., absoThickness/2), // its position
-                 gapLV,            // its logical volume
-                 "Gap",            // its name
-                 layerLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
-                 fCheckOverlaps);  // checking overlaps
+  new G4PVPlacement(0, gapPlace, gapLV,            
+                    "Gap", layerLV, false, 0, fCheckOverlaps);  
 
   //
   // print parameters

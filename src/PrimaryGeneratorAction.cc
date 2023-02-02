@@ -109,12 +109,13 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(px,py,pz));
 
+/*
   // Output initial p vectors to file
   std::ofstream ofile;
   ofile.open("data.dat", std::ios_base::app);
   ofile << px << "\t" << py << "\t" << pz << "\n";
   ofile.close();
-
+*/
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
