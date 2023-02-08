@@ -9,7 +9,12 @@
  
    // Draw histos filled by Geant4 simulation 
    // Open file filled by Geant4 simulation
-   TFile f("B4.root");
+   TFile *f = new TFile("B4.root","read");
+   TTree *t = (TTree*)f->Get("B4");
+
+   double total       = B4->GetEntries();
+   double detected    = B4->GetEntries("Ediode>0");
+   auto efficiency = 100*detected / total;
 
    // Create Canvas and divide it into 2 rows
    TCanvas *c = new TCanvas("c", "c", 800,800);
@@ -30,14 +35,14 @@
    p1->Divide(2,1);
    p1->Draw();
 
-   // Draw Eabs histogram in the upper pad 1
+   // Draw Ediode histogram in the upper pad 1
    p1->cd(1);
-   TH1D* hist1 = (TH1D*)f.Get("Eabs");
+   TH1D* hist1 = (TH1D*)f.Get("Ediode");
    hist1->Draw("HIST");
    
-   // Draw Labs histogram in the upper pad 2
+   // Draw Ldiode histogram in the upper pad 2
    p1->cd(2);
-   TH1D* hist2 = (TH1D*)f.Get("Labs");
+   TH1D* hist2 = (TH1D*)f.Get("Ldiode");
    hist2->Draw("HIST");
    //--------------------------------------
 
@@ -55,19 +60,19 @@
    p2->Divide(3,1);
    p2->Draw();
 
-   // Draw absX histogram in the lower pad 1
+   // Draw diodeX histogram in the lower pad 1
    p2->cd(1);
-   TH1D* hist3 = (TH1D*)f.Get("absX");
+   TH1D* hist3 = (TH1D*)f.Get("diodeX");
    hist3->Draw("HIST");
 
-   // Draw absY histogram in the lower pad 2
+   // Draw diodeY histogram in the lower pad 2
    p2->cd(2);
-   TH1D* hist4 = (TH1D*)f.Get("absY");
+   TH1D* hist4 = (TH1D*)f.Get("diodeY");
    hist4->Draw("HIST");
 
-   // Draw absZ histogram in the lower pad 3
+   // Draw diodeZ histogram in the lower pad 3
    p2->cd(3);
-   TH1D* hist5 = (TH1D*)f.Get("absZ");
+   TH1D* hist5 = (TH1D*)f.Get("diodeZ");
    hist5->Draw("HIST");   
    //--------------------------------------
 }
