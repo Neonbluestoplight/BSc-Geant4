@@ -29,6 +29,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
   // default particle kinematic
   //
+  std::remove("data.dat");
   auto particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("alpha");
   fParticleGun->SetParticleDefinition(particleDefinition);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
@@ -71,7 +72,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   // Set gun position
-  fParticleGun->SetParticlePosition(G4ThreeVector());
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
 
   G4double cosTheta = 2*G4UniformRand() - 1., phi = twopi*G4UniformRand();
   G4double sinTheta = std::sqrt(1. - cosTheta*cosTheta);
@@ -81,13 +82,13 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(px,py,pz));
 
-/*
+
   // Output initial p vectors to file
   std::ofstream ofile;
   ofile.open("data.dat", std::ios_base::app);
   ofile << px << "\t" << py << "\t" << pz << "\n";
   ofile.close();
-*/
+
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

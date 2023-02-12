@@ -23,9 +23,6 @@
 
 namespace B4c
 {
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 G4ThreadLocal
 G4GlobalMagFieldMessenger* DetectorConstruction::fMagFieldMessenger = nullptr;
 
@@ -56,13 +53,18 @@ void DetectorConstruction::DefineMaterials()
   nistManager->FindOrBuildMaterial("G4_Si");
   nistManager->FindOrBuildMaterial("G4_ALUMINUM_OXIDE");
 
-  G4double a;  // mass of a mole;
-  G4double z;  // z = mean number of protons;
-  G4double density;
+  G4double a;       // mass of a mole
+  G4double z;       // z = mean number of protons
+  G4double density; // density
 
   // Vacuum
-  new G4Material("Galactic", z=1., a=1.01*g/mole,density= universe_mean_density, 
-                  kStateGas, 2.73*kelvin, 3.e-18*pascal);
+  new G4Material("Galactic",                     // Name
+                 z=1.,                           // Mean number of protons
+                 a=1.01*g/mole,                  // Mass of a mole
+                 density= universe_mean_density, // density
+                 kStateGas,                      // State of material - Gaseous
+                 2.73*kelvin,                    // Temperature
+                 3.e-18*pascal);                 // Pressure
 
   // Print materials
   G4cout << *(G4Material::GetMaterialTable()) << G4endl;
@@ -75,73 +77,65 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // Geometry parameters
   fNofLayers = 1;
 
-  // Thickness parameters
   G4double diodeThickness   = 0.3  *mm;
   G4double backingThickness = 1.34 *mm;
   auto detectorThickness    = diodeThickness + backingThickness;
-  auto layerThickness       = detectorThickness;
 
-  // THE DETECTOR
-  G4double detectSizeX   = 25.5 *mm,
-           detectSizeY   = 25.5 *mm,
-           detectSizeZ   = detectorThickness;
-
-  G4double detectZoffset = (diodeThickness+backingThickness)/2;
-
-  G4double detectPosX    = 0 *mm,
-           detectPosY    = 0 *mm,
-           detectPosZ    = 0+detectZoffset;
-
-  // THE BACKING
-  G4double backSizeX    = 25.5 *mm,
-           backSizeY    = 25.5 *mm,
-           backSizeZ    = backingThickness;
-
-  G4double backPosX     = 0. *mm,
-           backPosY     = 0. *mm,
-           backPosZ     = diodeThickness/2;
-
-  // THE DIODE
-  G4double diodeSizeX  = 18  *mm,
-           diodeSizeY  = 18  *mm,
-           diodeSizeZ  = 0.3 *mm;
-
-  G4double diodePosX   = 0. *mm,
-           diodePosY   = 0. *mm,
-           diodePosZ   = -backingThickness/2;  
-
+  //-----------------------------------------------------------------------------------------
   // THE WORLD (Position is (0,0,0) and cannot be changed)
-  G4double worldSizeXYZ    = 5*diodeSizeX;
-  G4ThreeVector worldPlace = G4ThreeVector();  // Cannot adjust this
+  //-----------------------------------------------------------------------------------------
+  G4ThreeVector worldSize = G4ThreeVector((150 *mm)/2,             //World Size X
+                                          (150 *mm)/2,             //World Size Y
+                                          (150 *mm)/2);            //World Size Z
 
-  // THE LAYER (Position is relative to mother volume which is the detector)
-  G4double layerSizeX  = detectSizeX,
-           layerSizeY  = detectSizeY,
-           layerSizeZ  = layerThickness;
+  //-----------------------------------------------------------------------------------------
+  // THE DIODE
+  //-----------------------------------------------------------------------------------------
+  
+  G4ThreeVector diodeSize  = G4ThreeVector((18 *mm)/2,             //X Size - diode
+                                           (18 *mm)/2,             //Y Size - diode
+                                           (0.3 *mm)/2);           //Z Size - diode
 
-  // Rotation parameters of the calorimeter
-  G4double rotX = 0. *deg,
-           rotY = 0. *deg,
-           rotZ = 0. *deg;
+  G4ThreeVector diodePlace = G4ThreeVector((0. *mm),               //X Position - diode
+                                           (0. *mm),               //Y Position - diode
+                                           -backingThickness/2);   //Z Position - diode
 
-  G4RotationMatrix* worldRot = new G4RotationMatrix(); //Cannot adjust this
+  //-----------------------------------------------------------------------------------------
+  // THE BACKING
+  //-----------------------------------------------------------------------------------------
+  
+  G4ThreeVector backSize   = G4ThreeVector((25.5 *mm)/2,           //X Size - backing plate
+                                           (25.5 *mm)/2,           //Y Size - backing plate
+                                           (backingThickness)/2);  //Z Size - backing plate
+
+  G4ThreeVector backPlace  = G4ThreeVector((0. *mm),               //X Position -backing plate                
+                                           (0. *mm),               //Y Position -backing plate
+                                           (diodeThickness/2));    //Z Position -backing plate
+
+  //-----------------------------------------------------------------------------------------
+  // THE DETECTOR
+  //-----------------------------------------------------------------------------------------
+  G4ThreeVector detectSize = G4ThreeVector((25.5 *mm)/2,                  //X Size - detector
+                                           (25.5 *mm)/2,                  //Y Size - detector
+                                           (detectorThickness)/2);        //Z Size - detector           
+                 
+  G4double detectZoffset = (diodeThickness+backingThickness)/2;           //Z offset - detector.
+  G4double detectZdist   = 10 *mm;                                        //Z distance - detector       
+
+  G4ThreeVector detectPlace = G4ThreeVector((0. *mm),                     //X position - detector
+                                            (0. *mm),                     //Y position - detector
+                                            (detectZdist+detectZoffset)); //Z position - detector
+  //-----------------------------------------------------------------------------------------
+
+  // Rotation parameters of the detector
+  G4ThreeVector RotVect   = G4ThreeVector(0 *deg,                  //rotation along X axis
+                                          180 *deg,                //rotation along Y axis
+                                          0 *deg);                 //rotation along Z axis
+
   G4RotationMatrix* detectRot = new G4RotationMatrix();
-  detectRot->rotateX(rotX);
-  detectRot->rotateY(rotY);
-  detectRot->rotateZ(rotZ);
-
-  // Position in world vectors
-  G4ThreeVector detectPlace = G4ThreeVector(detectPosX, detectPosY, detectPosZ);
-  G4ThreeVector diodePlace  = G4ThreeVector(diodePosX, diodePosY, diodePosZ);
-  G4ThreeVector backPlace   = G4ThreeVector(backPosX, backPosY, backPosZ);
-
-  // Size vector parameters
-  G4ThreeVector detectSize = G4ThreeVector(detectSizeX/2, detectSizeY/2, detectSizeZ/2);
-  G4ThreeVector diodeSize  = G4ThreeVector(diodeSizeX/2, diodeSizeY/2, diodeSizeZ/2);
-  G4ThreeVector backSize   = G4ThreeVector(backSizeX/2, backSizeY/2, backSizeZ/2);
-
-  G4ThreeVector worldSize  = G4ThreeVector(worldSizeXYZ/2, worldSizeXYZ/2, worldSizeXYZ/2);
-  G4ThreeVector layerSize  = G4ThreeVector(layerSizeX/2, layerSizeY/2, layerSizeZ/2);
+  detectRot->rotateX(RotVect[0]);
+  detectRot->rotateY(RotVect[1]);
+  detectRot->rotateZ(RotVect[2]);
 
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
@@ -152,8 +146,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   if (! defaultMaterial|| ! diodeMaterial|| ! backMaterial) {
     G4ExceptionDescription msg;
     msg << "Cannot retrieve materials already defined.";
-    G4Exception("DetectorConstruction::DefineVolumes()",
-      "MyCode0001", FatalException, msg);
+    G4Exception("DetectorConstruction::DefineVolumes()", "MyCode0001", FatalException, msg);
   }
 
   // G4Box(<name>,<sizeX>,<sizeY>,<sizeZ>); where size is in half lengths
@@ -171,40 +164,32 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //
   auto worldS  = new G4Box("World", worldSize[0], worldSize[1], worldSize[2]); 
   auto worldLV = new G4LogicalVolume(worldS, defaultMaterial, "World");         
-
-  auto worldPV = new G4PVPlacement(worldRot, worldPlace, worldLV, "World", 0, false, 0, fCheckOverlaps);  
+  auto worldPV = new G4PVPlacement(0, G4ThreeVector(), worldLV, "World", 0, false, 0, fCheckOverlaps);  
 
   //
   // Detector
   //
-  auto detectorS = new G4Box("Detector", detectSize[0], detectSize[1], detectSize[2]);
+  auto detectorS  = new G4Box("Detector", detectSize[0], detectSize[1], detectSize[2]);
   auto detectLV   = new G4LogicalVolume(detectorS, defaultMaterial, "Detector");
 
-  new G4PVPlacement(detectRot, detectPlace, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);  
-
-  //
-  // Layer
-  //
-  auto layerS  = new G4Box("Layer", layerSize[0], layerSize[1], layerSize[2]);
-  auto layerLV = new G4LogicalVolume(layerS, defaultMaterial, "Layer");    
-
-  new G4PVReplica("Layer", layerLV, detectLV, kZAxis, fNofLayers, layerThickness);
+  new G4PVPlacement(0, detectPlace, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
+  new G4PVPlacement(detectRot, -detectPlace, detectLV, "Detector", worldLV, false, 1, fCheckOverlaps);  
 
   //
   // Diode
   // 
-  auto diodeS = new G4Box("Diode", diodeSize[0], diodeSize[1], diodeSize[2]);
+  auto diodeS  = new G4Box("Diode", diodeSize[0], diodeSize[1], diodeSize[2]);
   auto diodeLV = new G4LogicalVolume(diodeS, diodeMaterial, "diodeLV");   
 
-  new G4PVPlacement(0, diodePlace, diodeLV, "Diode", layerLV, false, 0, fCheckOverlaps); 
+  new G4PVPlacement(0, diodePlace, diodeLV, "Diode", detectLV, false, 0, fCheckOverlaps); 
 
   //
   // Backing
   //
-  auto backS = new G4Box("Backing", backSize[0], backSize[1], backSize[2]); 
+  auto backS  = new G4Box("Backing", backSize[0], backSize[1], backSize[2]); 
   auto backLV = new G4LogicalVolume(backS, backMaterial, "backLV");     
 
-  new G4PVPlacement(0, backPlace, backLV, "Backing", layerLV, false, 0, fCheckOverlaps);  
+  new G4PVPlacement(0, backPlace, backLV, "Backing", detectLV, false, 0, fCheckOverlaps);  
 
   //
   // print parameters
@@ -212,7 +197,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   G4cout
     << G4endl
     << "------------------------------------------------------------" << G4endl
-    << "---> The calorimeter is " << fNofLayers << " layers of: [ "
+    << "---> The detector is " << fNofLayers << " layers of: [ "
     << diodeThickness/mm << "mm of " << diodeMaterial->GetName()
     << " + "
     << backingThickness/mm << "mm of " << backMaterial->GetName() << " ] " << G4endl
@@ -221,16 +206,20 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //
   // Visualization attributes
   //
-  worldLV->SetVisAttributes (G4VisAttributes::GetInvisible());
+  auto whiteBoxVisAtt   = new G4VisAttributes(G4Colour(1.0,1.0,1.0));     //rgb = (255,255,255)
+  auto ceramicBoxVisAtt = new G4VisAttributes(G4Colour(0.88,0.87,0.82));  //rgb = (119,195,236)
+  auto siliconBoxVisAtt = new G4VisAttributes(G4Colour(0.58,0.60,0.64));  //rgb = (149,153,165)
 
-  auto simpleBoxVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
-  simpleBoxVisAtt->SetVisibility(true);
-  detectLV->SetVisAttributes(simpleBoxVisAtt);
+  whiteBoxVisAtt->SetVisibility(true);
+  ceramicBoxVisAtt->SetVisibility(true);
+  siliconBoxVisAtt->SetVisibility(true);
 
-  //
-  // Always return the physical World
-  //
-  return worldPV;
+  worldLV->SetVisAttributes(G4VisAttributes::GetInvisible());   //world         : Invisible
+  detectLV->SetVisAttributes(G4VisAttributes::GetInvisible());  //full detector : Invisible
+  diodeLV->SetVisAttributes(siliconBoxVisAtt);                  //diode         : Silicon colour
+  backLV->SetVisAttributes(ceramicBoxVisAtt);                   //backing plate : Ceramic colour
+
+  return worldPV; // Always return the physical World
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -247,18 +236,14 @@ void DetectorConstruction::ConstructSDandField()
   SetSensitiveDetector("diodeLV",diodeSD);
 
   //
-  // Magnetic field
+  // Magnetic field - Create global magnetic field messenger.
   //
-  // Create global magnetic field messenger.
-  
+
   G4ThreeVector fieldValue;   // Uniform magnetic field created if the field value is not zero.
   fMagFieldMessenger = new G4GlobalMagFieldMessenger(fieldValue);
   fMagFieldMessenger->SetVerboseLevel(1);
 
-  // Register the field messenger for deleting
-  G4AutoDelete::Register(fMagFieldMessenger);
+  G4AutoDelete::Register(fMagFieldMessenger); // Register the field messenger for deleting
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 }
