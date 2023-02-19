@@ -120,7 +120,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                            (detectorThickness)/2);        //Z Size - detector           
                  
   G4double detectZoffset = (diodeThickness+backingThickness)/2;           //Z offset - detector.
-  G4double detectZdist   = 10 *mm;                                        //Z distance - detector       
+  G4double detectZdist   = 0 *mm;                                        //Z distance - detector       
 
   G4ThreeVector detectPlace = G4ThreeVector((0. *mm),                     //X position - detector
                                             (0. *mm),                     //Y position - detector

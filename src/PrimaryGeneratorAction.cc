@@ -29,7 +29,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
   // default particle kinematic
   //
-  std::remove("data.dat");
   auto particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("alpha");
   fParticleGun->SetParticleDefinition(particleDefinition);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
