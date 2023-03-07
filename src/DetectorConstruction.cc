@@ -120,16 +120,29 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                            (detectorThickness)/2);        //Z Size - detector           
                  
   G4double detectZoffset = (diodeThickness+backingThickness)/2;           //Z offset - detector.
-  G4double detectZdist   = 0 *mm;                                        //Z distance - detector       
+  G4double detectZdist   = 0 *mm;                                        //Z distance - detector  
+  G4double TheOffset     = 2*detectSize[0];     
 
-  G4ThreeVector detectPlace = G4ThreeVector((0. *mm),                     //X position - detector
+  G4ThreeVector detect1Place = G4ThreeVector((0. *mm),                    //X position - detector
+                                            TheOffset,                    //Y position - detector
+                                            (detectZdist+detectZoffset)); //Z position - detector
+
+  G4ThreeVector detect2Place = G4ThreeVector((0. *mm),                    //X position - detector
+                                            -TheOffset,                   //Y position - detector
+                                            (detectZdist+detectZoffset)); //Z position - detector
+
+  G4ThreeVector detect3Place = G4ThreeVector(TheOffset,                   //X position - detector
                                             (0. *mm),                     //Y position - detector
                                             (detectZdist+detectZoffset)); //Z position - detector
+
+  G4ThreeVector detect4Place = G4ThreeVector(-TheOffset,                  //X position - detector
+                                            (0. *mm),                     //Y position - detector
+                                            (detectZdist+detectZoffset)); //Z position - detector                                                                                            
   //-----------------------------------------------------------------------------------------
 
   // Rotation parameters of the detector
   G4ThreeVector RotVect   = G4ThreeVector(0 *deg,                  //rotation along X axis
-                                          180 *deg,                //rotation along Y axis
+                                          0 *deg,                  //rotation along Y axis
                                           0 *deg);                 //rotation along Z axis
 
   G4RotationMatrix* detectRot = new G4RotationMatrix();
@@ -172,8 +185,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto detectorS  = new G4Box("Detector", detectSize[0], detectSize[1], detectSize[2]);
   auto detectLV   = new G4LogicalVolume(detectorS, defaultMaterial, "Detector");
 
-  new G4PVPlacement(0, detectPlace, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
-  new G4PVPlacement(detectRot, -detectPlace, detectLV, "Detector", worldLV, false, 1, fCheckOverlaps);  
+  new G4PVPlacement(0, detect1Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
+  new G4PVPlacement(0, detect2Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);  
+  new G4PVPlacement(0, detect3Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
+  new G4PVPlacement(0, detect4Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
 
   //
   // Diode
