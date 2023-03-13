@@ -119,37 +119,48 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                            (25.5 *mm)/2,                  //Y Size - detector
                                            (detectorThickness)/2);        //Z Size - detector           
                  
-  G4double detectZoffset = (diodeThickness+backingThickness)/2;           //Z offset - detector.
-  G4double detectZdist   = 0 *mm;                                        //Z distance - detector  
+  G4double detectZoffset = detectorThickness/2;           //Z offset - detector.
+  G4double detectZdist   = 0 *mm;                         //Z distance - detector  
   G4double TheOffset     = 2*detectSize[0];     
 
-  G4ThreeVector detect1Place = G4ThreeVector((0. *mm),                    //X position - detector
-                                            TheOffset,                    //Y position - detector
-                                            (detectZdist+detectZoffset)); //Z position - detector
+  G4double angle1      = 0. *deg;
+  G4double angle2      = 0. *deg;
 
-  G4ThreeVector detect2Place = G4ThreeVector((0. *mm),                    //X position - detector
-                                            -TheOffset,                   //Y position - detector
-                                            (detectZdist+detectZoffset)); //Z position - detector
+  G4double rotXoffset1 = std::sin(angle1)*detectSize[0];
+  G4double rotYoffset1 = detectSize[1]-std::cos(angle1)*detectSize[1];
 
-  G4ThreeVector detect3Place = G4ThreeVector(TheOffset,                   //X position - detector
-                                            (0. *mm),                     //Y position - detector
-                                            (detectZdist+detectZoffset)); //Z position - detector
+  G4double rotXoffset2 = std::sin(angle2)*detectSize[0];
+  G4double rotYoffset2 = detectSize[1]-std::cos(angle2)*detectSize[1];
 
-  G4ThreeVector detect4Place = G4ThreeVector(-TheOffset,                  //X position - detector
-                                            (0. *mm),                     //Y position - detector
-                                            (detectZdist+detectZoffset)); //Z position - detector                                                                                            
+  G4ThreeVector detect1Place = G4ThreeVector((0. *mm),                                               //X position - detector
+                                             (TheOffset-rotYoffset1+std::sin(angle1)*detectZoffset),   //Y position - detector
+                                             (detectZdist+std::cos(angle1)*detectZoffset-rotXoffset1));//Z position - detector
+
+  G4ThreeVector detect2Place = G4ThreeVector((0. *mm),                                               //X position - detector
+                                            -(TheOffset-rotYoffset1+std::sin(angle1)*detectZoffset),   //Y position - detector
+                                             (detectZdist+std::cos(angle1)*detectZoffset-rotXoffset1));//Z position - detector
+
+  G4ThreeVector detect3Place = G4ThreeVector((TheOffset-rotYoffset2+std::sin(angle2)*detectZoffset),   //X position - detector
+                                             (0. *mm),                                               //Y position - detector
+                                             (detectZdist+std::cos(angle2)*detectZoffset-rotXoffset2));//Z position - detector
+
+  G4ThreeVector detect4Place = G4ThreeVector(-(TheOffset-rotYoffset2+std::sin(angle2)*detectZoffset),  //X position - detector
+                                             (0. *mm),                                               //Y position - detector
+                                             (detectZdist+std::cos(angle2)*detectZoffset-rotXoffset2));//Z position - detector
   //-----------------------------------------------------------------------------------------
-
+  
   // Rotation parameters of the detector
-  G4ThreeVector RotVect   = G4ThreeVector(0 *deg,                  //rotation along X axis
-                                          0 *deg,                  //rotation along Y axis
-                                          0 *deg);                 //rotation along Z axis
 
-  G4RotationMatrix* detectRot = new G4RotationMatrix();
-  detectRot->rotateX(RotVect[0]);
-  detectRot->rotateY(RotVect[1]);
-  detectRot->rotateZ(RotVect[2]);
+  G4RotationMatrix* detectRot1 = new G4RotationMatrix();
+  G4RotationMatrix* detectRot2 = new G4RotationMatrix();
+  G4RotationMatrix* detectRot3 = new G4RotationMatrix();
+  G4RotationMatrix* detectRot4 = new G4RotationMatrix();
 
+  detectRot1->rotateX(angle1);         // rotate upper detector along X-axis by angle1 
+  detectRot2->rotateX(-angle1);        // rotate lower detector along X-axis by angle1 in opposite direction
+  detectRot3->rotateY(-angle2);        // rotate right detector along Y-axis by angle2 in opposite direction
+  detectRot4->rotateY(angle2);         // rotate left detector along Y-axis by angle2 
+ 
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
   auto diodeMaterial   = G4Material::GetMaterial("G4_Si");
@@ -185,11 +196,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto detectorS  = new G4Box("Detector", detectSize[0], detectSize[1], detectSize[2]);
   auto detectLV   = new G4LogicalVolume(detectorS, defaultMaterial, "Detector");
 
-  new G4PVPlacement(0, detect1Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
-  new G4PVPlacement(0, detect2Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);  
-  new G4PVPlacement(0, detect3Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
-  new G4PVPlacement(0, detect4Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
-
+  new G4PVPlacement(detectRot1, detect1Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
+  new G4PVPlacement(detectRot2, detect2Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);  
+  new G4PVPlacement(detectRot3, detect3Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
+  new G4PVPlacement(detectRot4, detect4Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
   //
   // Diode
   // 

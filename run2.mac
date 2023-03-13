@@ -8,12 +8,13 @@
 #
 /run/initialize
 #
-# Default kinemtics: 
-# electron 50 MeV in direction (0.,0.,1.)
+/control/alias EventNo 1000000          # The number of events you wish to run
+/control/divide Ticks {EventNo} 100     # Divides the number of events by the number of ticks wanted
+/run/printProgress {Ticks}              # Prints an event log every (EventNo/Ticks) event
 
-#
-/control/alias EventNo 1000000
-/control/divide Percent {EventNo} 100
-/run/printProgress {Percent}
-/run/beamOn {EventNo}
+/control/alias zpos 0.
+/gun/position 0. 0. -{zpos} mm         # Sets position of source at (x,y,z) 
+/run/beamOn {EventNo}                   # Runs the beam for the EventNo number of events
+
+/control/shell root -q plotHisto.C      # Writes a shell command to open plotHisto.C and close it once completed
 

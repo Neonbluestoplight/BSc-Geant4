@@ -17,7 +17,12 @@ void plotHisto()
 
    cout<<"Efficiency = "<<efficiency<<"+/-"<<error<<endl;
 
-   TCanvas *c1 = new TCanvas();
+   std::ofstream outfile;
+   outfile.open("efficiency_data.dat", std::ios_base::app);
+   outfile << efficiency << "+/-" <<error << "\n";
+   outfile.close();
+
+/* TCanvas *c1 = new TCanvas();
    c1->Divide(3,1);
 
    TH1F *histx = new TH1F("x-component", "x momentum component", 1000, -1.5, 1.5);
@@ -42,5 +47,5 @@ void plotHisto()
    c1->cd(2);
    histy->Draw();
    c1->cd(3);
-   histz->Draw();
+   histz->Draw();*/
 }
