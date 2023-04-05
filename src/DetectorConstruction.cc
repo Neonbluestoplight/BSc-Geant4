@@ -123,31 +123,27 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   G4double detectZdist   = 0 *mm;                         //Z distance - detector  
   G4double TheOffset     = 2*detectSize[0];     
 
-  G4double angle1      = 0. *deg;
-  G4double angle2      = 0. *deg;
-
-  G4double rotXoffset1 = std::sin(angle1)*detectSize[0];
-  G4double rotYoffset1 = detectSize[1]-std::cos(angle1)*detectSize[1];
-
-  G4double rotXoffset2 = std::sin(angle2)*detectSize[0];
-  G4double rotYoffset2 = detectSize[1]-std::cos(angle2)*detectSize[1];
+  G4double angle      = 90. *deg;
+  G4double rotXoffset = -std::sin(angle)*detectSize[0];
+  G4double rotYoffset = detectSize[1]-std::cos(angle)*detectSize[1];
 
   G4ThreeVector detect1Place = G4ThreeVector((0. *mm),                                               //X position - detector
-                                             (TheOffset-rotYoffset1+std::sin(angle1)*detectZoffset),   //Y position - detector
-                                             (detectZdist+std::cos(angle1)*detectZoffset-rotXoffset1));//Z position - detector
+                                             (TheOffset-rotYoffset+std::sin(angle)*detectZoffset),   //Y position - detector
+                                             (detectZdist+std::cos(angle)*detectZoffset-rotXoffset));//Z position - detector
 
   G4ThreeVector detect2Place = G4ThreeVector((0. *mm),                                               //X position - detector
-                                            -(TheOffset-rotYoffset1+std::sin(angle1)*detectZoffset),   //Y position - detector
-                                             (detectZdist+std::cos(angle1)*detectZoffset-rotXoffset1));//Z position - detector
+                                            -(TheOffset-rotYoffset+std::sin(angle)*detectZoffset),   //Y position - detector
+                                             (detectZdist+std::cos(angle)*detectZoffset-rotXoffset));//Z position - detector
 
-  G4ThreeVector detect3Place = G4ThreeVector((TheOffset-rotYoffset2+std::sin(angle2)*detectZoffset),   //X position - detector
+  G4ThreeVector detect3Place = G4ThreeVector((TheOffset-rotYoffset+std::sin(angle)*detectZoffset),   //X position - detector
                                              (0. *mm),                                               //Y position - detector
-                                             (detectZdist+std::cos(angle2)*detectZoffset-rotXoffset2));//Z position - detector
+                                             (detectZdist+std::cos(angle)*detectZoffset-rotXoffset));//Z position - detector
 
-  G4ThreeVector detect4Place = G4ThreeVector(-(TheOffset-rotYoffset2+std::sin(angle2)*detectZoffset),  //X position - detector
+  G4ThreeVector detect4Place = G4ThreeVector(-(TheOffset-rotYoffset+std::sin(angle)*detectZoffset),  //X position - detector
                                              (0. *mm),                                               //Y position - detector
-                                             (detectZdist+std::cos(angle2)*detectZoffset-rotXoffset2));//Z position - detector
+                                             (detectZdist+std::cos(angle)*detectZoffset-rotXoffset));//Z position - detector
   //-----------------------------------------------------------------------------------------
+
   
   // Rotation parameters of the detector
 
@@ -156,10 +152,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   G4RotationMatrix* detectRot3 = new G4RotationMatrix();
   G4RotationMatrix* detectRot4 = new G4RotationMatrix();
 
-  detectRot1->rotateX(angle1);         // rotate upper detector along X-axis by angle1 
-  detectRot2->rotateX(-angle1);        // rotate lower detector along X-axis by angle1 in opposite direction
-  detectRot3->rotateY(-angle2);        // rotate right detector along Y-axis by angle2 in opposite direction
-  detectRot4->rotateY(angle2);         // rotate left detector along Y-axis by angle2 
+  detectRot1->rotateX(angle);         // rotate upper detector along X-axis by angle 
+  detectRot2->rotateX(-angle);        // rotate lower detector along X-axis by angle in opposite direction
+  detectRot3->rotateY(-angle);        // rotate right detector along Y-axis by angle in opposite direction
+  detectRot4->rotateY(angle);         // rotate left detector along Y-axis by angle 
+
  
   // Get materials
   auto defaultMaterial = G4Material::GetMaterial("Galactic");
@@ -199,7 +196,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   new G4PVPlacement(detectRot1, detect1Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
   new G4PVPlacement(detectRot2, detect2Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);  
   new G4PVPlacement(detectRot3, detect3Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
-  new G4PVPlacement(detectRot4, detect4Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps);
+  new G4PVPlacement(detectRot4, detect4Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); 
+
   //
   // Diode
   // 
