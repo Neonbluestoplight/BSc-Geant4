@@ -8,4 +8,4 @@
 #
 /run/initialize                             # initialises the geometry of the application
 #
-/control/loop run2.mac zpos 0 20 1          # loops the value of zpos in run2.mac from 0 to 10 in steps of 1
+/control/loop run2.mac zpos 10 10 1          # loops the value of zpos in run2.mac from 0 to 10 in steps of 1

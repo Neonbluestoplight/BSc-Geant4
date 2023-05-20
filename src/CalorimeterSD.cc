@@ -46,12 +46,8 @@ void CalorimeterSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 {
-  G4StepPoint *preStepPoint = step->GetPreStepPoint(); 
   // energy deposit
   auto edep = step->GetTotalEnergyDeposit();
-
-  // position
-  G4ThreeVector particlePos = preStepPoint->GetPosition();
 
   // step length
   G4double stepLength = 0.;
@@ -79,8 +75,8 @@ G4bool CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*)
   auto hitTotal = (*fHitsCollection)[fHitsCollection->entries()-1];
 
   // Add values
-  hit->Add(edep, stepLength, particlePos);
-  hitTotal->Add(edep, stepLength, particlePos);
+  hit->Add(edep, stepLength);
+  hitTotal->Add(edep, stepLength);
 
   return true;
 }

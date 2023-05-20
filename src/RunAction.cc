@@ -32,23 +32,19 @@ RunAction::RunAction()
 
   // Creating histograms
   analysisManager->CreateH1("Ediode","Edep in diode", 1000, 0., 10*MeV);
+  analysisManager->CreateH1("Eannular","Edep in Annular detector", 1000, 0., 10*MeV);
 
   analysisManager->CreateH1("Ldiode","trackL in diode", 1000, 0., 1*mm);
-
-  analysisManager->CreateH1("diodeX","diode X position", 1000, -10.*mm, 10*mm);
-  analysisManager->CreateH1("diodeY","diode Y position", 1000, -10.*mm, 10*mm);
-  analysisManager->CreateH1("diodeZ","diode Z position", 1000, -10.*mm, 10*mm);
+  analysisManager->CreateH1("Lannular","trackL in Annular detector", 1000, 0., 1*mm);
 
   // Creating ntuple
   analysisManager->CreateNtuple("B4", "Edep and TrackL");
 
   analysisManager->CreateNtupleDColumn("Ediode");
-
+  analysisManager->CreateNtupleDColumn("Eannular");
+  
   analysisManager->CreateNtupleDColumn("Ldiode");
-
-  analysisManager->CreateNtupleDColumn("diodeX");
-  analysisManager->CreateNtupleDColumn("diodeY");
-  analysisManager->CreateNtupleDColumn("diodeZ");
+  analysisManager->CreateNtupleDColumn("Lannular");
 
   analysisManager->FinishNtuple();
 }
@@ -102,6 +98,16 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
       << G4BestUnit(analysisManager->GetH1(2)->mean(), "Length")
       << " rms = "
       << G4BestUnit(analysisManager->GetH1(2)->rms(),  "Length") << G4endl;
+
+    G4cout << " EAnnular : mean = "
+     << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy")
+     << " rms = "
+     << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
+
+    G4cout << " LAnnular : mean = "
+     << G4BestUnit(analysisManager->GetH1(3)->mean(), "Length")
+     << " rms = "
+     << G4BestUnit(analysisManager->GetH1(3)->rms(),  "Length") << G4endl;
   }
 
   // save histograms & ntuple

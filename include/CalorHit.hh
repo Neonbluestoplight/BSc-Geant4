@@ -1,7 +1,7 @@
 /// Calorimeter hit class
 ///
-/// It defines data members to store the the energy deposit, track lengths and positions
-/// of charged particles in a selected volume - fEdep, fTrackLength and fparticlePos
+/// It defines data members to store the the energy deposit and track lengths
+/// of charged particles in a selected volume - fEdep and fTrackLength
 
 /// \file CalorHit.hh
 /// \brief Definition of the B4c::CalorHit class
@@ -36,17 +36,15 @@ class CalorHit : public G4VHit
     void Print() override;
 
     // methods to handle data
-    void Add(G4double de, G4double dl, G4ThreeVector dp);
+    void Add(G4double de, G4double dl);
 
     // get methods
     G4double GetEdep() const;
     G4double GetTrackLength() const;
-    G4ThreeVector GetPosition() const;
 
   private:
     G4double fEdep = 0.;                          ///< Energy deposit in the sensitive volume
     G4double fTrackLength = 0.;                   ///< Track length in the sensitive volume
-    G4ThreeVector fparticlePos = G4ThreeVector(); ///< Track position in the sensitive volume
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -75,10 +73,9 @@ inline void CalorHit::operator delete(void *hit)
   CalorHitAllocator->FreeSingle((CalorHit*) hit);
 }
 
-inline void CalorHit::Add(G4double de, G4double dl, G4ThreeVector dp) {
+inline void CalorHit::Add(G4double de, G4double dl) {
   fEdep += de;
   fTrackLength += dl;
-  fparticlePos += dp;
 }
 
 inline G4double CalorHit::GetEdep() const {
@@ -87,10 +84,6 @@ inline G4double CalorHit::GetEdep() const {
 
 inline G4double CalorHit::GetTrackLength() const {
   return fTrackLength;
-}
-
-inline G4ThreeVector CalorHit::GetPosition() const {
-  return fparticlePos;
 }
 
 }

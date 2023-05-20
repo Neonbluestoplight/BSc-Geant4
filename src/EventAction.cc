@@ -44,26 +44,6 @@ EventAction::GetHitsCollection(G4int hcID, const G4Event* event) const
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/*
-
-void EventAction::PrintEventStatistics(G4double diodeEdep, G4double diodeTrackLength, G4ThreeVector diodePos) const
-{
-  // print event statistics
-
-  G4cout
-     << "   Diode: total energy: "
-     << std::setw(7) << G4BestUnit(diodeEdep, "Energy")
-     << "       total track length: "
-     << std::setw(7) << G4BestUnit(diodeTrackLength, "Length")
-     << "       event position: "
-     << std::setw(7) << diodePos
-     << G4endl;
-
-}
-
-*/
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 void EventAction::BeginOfEventAction(const G4Event* /*event*/)
 {}
 
@@ -74,27 +54,16 @@ void EventAction::EndOfEventAction(const G4Event* event)
   // Get hits collections IDs (only once)
   if ( fDioHCID == -1 ) {
     fDioHCID = G4SDManager::GetSDMpointer()->GetCollectionID("DiodeHitsCollection");
+    fAnnHCID = G4SDManager::GetSDMpointer()->GetCollectionID("AnnularHitsCollection");
   }
 
   // Get hits collections
-  auto diodeHC = GetHitsCollection(fDioHCID, event);
+  auto diodeHC   = GetHitsCollection(fDioHCID, event);
+  auto annularHC = GetHitsCollection(fAnnHCID, event);
 
   // Get hit with total values
-  auto diodeHit = (*diodeHC)[diodeHC->entries()-1];
-
-  // Print per event (modulo n)
-  
-  /*
-
-  auto eventID = event->GetEventID();
-  auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
-
-  if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
-    G4cout << "---> End of event: " << eventID << G4endl;
-    PrintEventStatistics(diodeHit->GetEdep(), diodeHit->GetTrackLength(), diodeHit->GetPosition());
-  }
-  
-  */
+  auto diodeHit   = (*diodeHC)[diodeHC->entries()-1];
+  auto annularHit = (*annularHC)[annularHC->entries()-1];
 
   // Fill histograms, ntuple
   //
@@ -104,21 +73,17 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   // fill histograms
   analysisManager->FillH1(0, diodeHit->GetEdep());
+  analysisManager->FillH1(1, annularHit->GetEdep());
 
-  analysisManager->FillH1(1, diodeHit->GetTrackLength());
-
-  analysisManager->FillH1(2, diodeHit->GetPosition()[0]);
-  analysisManager->FillH1(3, diodeHit->GetPosition()[1]);
-  analysisManager->FillH1(4, diodeHit->GetPosition()[2]);
+  analysisManager->FillH1(2, diodeHit->GetTrackLength());
+  analysisManager->FillH1(3, annularHit->GetTrackLength());
 
   // fill ntuple
   analysisManager->FillNtupleDColumn(0, diodeHit->GetEdep());
+  analysisManager->FillNtupleDColumn(1, annularHit->GetEdep());
 
-  analysisManager->FillNtupleDColumn(1, diodeHit->GetTrackLength());
-
-  analysisManager->FillNtupleDColumn(2, diodeHit->GetPosition()[0]);
-  analysisManager->FillNtupleDColumn(3, diodeHit->GetPosition()[1]);
-  analysisManager->FillNtupleDColumn(4, diodeHit->GetPosition()[2]);
+  analysisManager->FillNtupleDColumn(2, diodeHit->GetTrackLength());
+  analysisManager->FillNtupleDColumn(3, annularHit->GetTrackLength());
 
   analysisManager->AddNtupleRow();
 }

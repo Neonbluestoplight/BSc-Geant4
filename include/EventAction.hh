@@ -28,10 +28,11 @@ public:
 private:
   // methods
   CalorHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;
-  void PrintEventStatistics(G4double diodeEdep, G4double diodeTrackLength, G4ThreeVector diodePos) const;
+  void PrintEventStatistics(G4double diodeEdep, G4double diodeTrackLength) const;
 
   // data members
   G4int fDioHCID = -1;
+  G4int fAnnHCID = -1;
 };
 
 }
