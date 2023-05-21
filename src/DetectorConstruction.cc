@@ -176,29 +176,49 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                  
   G4double detectZoffset  = detectorThickness/2;   // Z offset - detector
   G4double detectZdist    = 0 *mm;                 // Z distance - detector  
-  G4double detectorOffset = 0*mm;     // Offsetting the detector to make detector sized hole 
+  G4double detectorOffset = 2*detectSize[0];       // Offsetting the detector to make detector sized hole 
 
-  G4double angle      = 0. *deg;                                     // Angle of rotation
+  G4double angle      = 90. *deg;                                     // Angle of rotation
   G4double rotXoffset = -std::sin(angle)*detectSize[0];              // X-offset due to rotation
   G4double rotYoffset = detectSize[1]-std::cos(angle)*detectSize[1]; // Y-offset due to rotation
 
-  G4double aperture = 0*mm;                        // The aperture of the hole in the middle of the array
-  G4double apOffset = (aperture-detectorOffset)/2; // Offsetting the detector by half the aperture distance
+  G4double aperture = 2*detectSize[0];                         // The aperture of the hole in the middle of the array
+  G4double apOffset = (aperture-detectorOffset)/2;    // Offsetting the detector by half the aperture distance
 
   G4double primaryOffset = detectorOffset+apOffset-rotYoffset+std::sin(angle)*detectZoffset; // The main placement vector with the offset
   G4double Zoffset       = detectZdist+std::cos(angle)*detectZoffset-rotXoffset;             // The Z-direction placement vector
 
   // UPPER DETECTOR
-  G4ThreeVector detectPlace = G4ThreeVector(-(apOffset),      //X position - detector placement
-                                             (primaryOffset), //Y position - detector placement
-                                             (Zoffset));      //Z position - detector placement
+  G4ThreeVector detect1Place = G4ThreeVector(-(apOffset),      //X position - detector placement
+                                             (primaryOffset),  //Y position - detector placement
+                                             (Zoffset));       //Z position - detector placement
 
+  // LOWER DETECTOR
+  G4ThreeVector detect2Place = G4ThreeVector((apOffset),       //X position - detector placement
+                                             -(primaryOffset), //Y position - detector placement
+                                             (Zoffset));       //Z position - detector placement
+
+  // RIGHT DETECTOR
+  G4ThreeVector detect3Place = G4ThreeVector((primaryOffset),  //X position - detector placement 
+                                             (apOffset),       //Y position - detector placement
+                                             (Zoffset));       //Z position - detector placement
+
+  // LEFT DETECTOR
+  G4ThreeVector detect4Place = G4ThreeVector(-(primaryOffset), //X position - detector placement
+                                             -(apOffset),      //Y position - detector placement
+                                             (Zoffset));       //Z position - detector placement
   //-----------------------------------------------------------------------------------------
   
   // Rotation parameters of the detector
-  G4RotationMatrix* detectRot = new G4RotationMatrix();
+  G4RotationMatrix* detectRot1 = new G4RotationMatrix();
+  G4RotationMatrix* detectRot2 = new G4RotationMatrix();
+  G4RotationMatrix* detectRot3 = new G4RotationMatrix();
+  G4RotationMatrix* detectRot4 = new G4RotationMatrix();
 
-  detectRot->rotateX(angle);      // rotate upper detector along X-axis by angle 
+  detectRot1->rotateX(angle);      // rotate upper detector along X-axis by angle 
+  detectRot2->rotateX(-angle);     // rotate lower detector along X-axis by angle in opposite direction
+  detectRot3->rotateY(-angle);     // rotate right detector along Y-axis by angle in opposite direction
+  detectRot4->rotateY(angle);      // rotate left detector along Y-axis by angle 
 
   //-----------------------------------------------------------------------------------------
   
@@ -291,7 +311,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto detectorS  = new G4Box("Detector", detectSize[0], detectSize[1], detectSize[2]);
   auto detectLV   = new G4LogicalVolume(detectorS, defaultMaterial, "Detector");
 
-  new G4PVPlacement(detectRot, detectPlace, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); // upper detector placement
+  new G4PVPlacement(detectRot1, detect1Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); // upper detector placement
+  new G4PVPlacement(detectRot2, detect2Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); // lower detector placement 
+  new G4PVPlacement(detectRot3, detect3Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); // right detector placement
+  new G4PVPlacement(detectRot4, detect4Place, detectLV, "Detector", worldLV, false, 0, fCheckOverlaps); // left detector placement
   
   //
   // The Ceramic extrusion
@@ -314,8 +337,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   auto AlringHoleS = new G4Box("AlringHole", AlringHoleSize[0], AlringHoleSize[1], AlringHoleSize[2]);
   auto AlringHoleLV = new G4LogicalVolume(AlringHoleS, defaultMaterial, "AlringHoleLV");
 
-  //new G4PVPlacement(0, AlringPlace, AlringLV, "Alring", extrusionHoleLV, false, 0, fCheckOverlaps);
-  //new G4PVPlacement(0, relPosition, AlringHoleLV, "AlringHole", AlringLV, false, 0, fCheckOverlaps); 
+  new G4PVPlacement(0, AlringPlace, AlringLV, "Alring", extrusionHoleLV, false, 0, fCheckOverlaps);
+  new G4PVPlacement(0, relPosition, AlringHoleLV, "AlringHole", AlringLV, false, 0, fCheckOverlaps); 
 
   //
   // Backing
@@ -356,7 +379,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                   0 *deg, 360 *deg);
   auto anDetectorLV = new G4LogicalVolume(anDetectorS, defaultMaterial, "anDetectorLV");
 
-  //new G4PVPlacement(0, anDetectorPlace, anDetectorLV, "anDetector", worldLV, false, 0, fCheckOverlaps);
+  new G4PVPlacement(0, anDetectorPlace, anDetectorLV, "anDetector", worldLV, false, 0, fCheckOverlaps);
 
   //
   // Photosensitive region
